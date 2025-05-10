@@ -1,0 +1,9 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kubernetesVersion: 1.32.0
+# This is a configuration file for kubeadm to set up a Kubernetes cluster.
+kind: ClusterConfiguration
+networking:
+  podSubnet: 192.168.0.0/16
+apiServer:
+  extraArgs:
+   service-node-port-range: 1024-1233
