@@ -586,6 +586,8 @@ Example
 
 ## **Step 11: Clean up Resources**
 
-**Destroy the Infrastructure by running the following command**
+### **Destroy the Infrastructure by running the following command**
 
+```bash
 Terraform destroy
+```
