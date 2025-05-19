@@ -94,7 +94,7 @@ sudo apt install terraform -y
 terraform -v
 ```
 
-![Image3](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9bc9affe2c6baf0846cd729b516f49e255c59c1e/Images/Image3.png)
+![Image3](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/32e431dae7f7ac294d82c533e71d836a17b8b7c9/Images/Image3.png)
 
 ## AWSCLI Install
 
@@ -332,7 +332,7 @@ sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
 
-![Image20](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9ee57c26065324975be7567bbab76783d6b7b4ef/Images/Image20.png)
+![Image20](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/32e431dae7f7ac294d82c533e71d836a17b8b7c9/Images/Image20.png)
 
 ### **Install Kubernetes Components (kubeadm, kubelet, kubectl)**
 
