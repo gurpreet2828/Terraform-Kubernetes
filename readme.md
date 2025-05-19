@@ -211,114 +211,130 @@ After successfully applying the Terraform configuration, you will see the public
 
 ![Image15](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image15.png)
 
-## **Step 5: Connect to K8s Master (Control Plane) Node**  {#step-5-connect-to-k8s-master-control-plane-node}
+## **Step 5: Connect to K8s Master (Control Plane) Node**
 
 Using the public IP address provided in the Terraform output, connect to the EC2 instance by executing the following command in your terminal:
 
+```shell
 ssh -i /root/.ssh/docker ec2-user@34.201.56.12
+```
 
-![A screenshot of a computer program AI-generated content may be
-incorrect.](media/image14.png){width="7.5in"
-height="3.3819444444444446in"}
+![Image16](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9ee57c26065324975be7567bbab76783d6b7b4ef/Images/Image16.png)
 
 ## **Step 6: Install and Configure Kubernetes Master (Control Plane) Node**
 
-**Follow these steps to set up the Kubernetes Control Plane node
-effectively:**
+### **Follow these steps to set up the Kubernetes Control Plane node effectively:**
 
 **Update the System and Install Dependencies**
 
-Run the following commands to update the system and install essential
-packages:
+Run the following commands to update the system and install essential packages:
 
+```bash
 sudo yum update -y
 
 sudo yum install -y curl wget git
+```
 
-**Disable Swap**
+**Disable Swap**:
 
 Kubernetes requires swap to be disabled. Execute:
 
+```bash
 sudo swapoff -a
-
 sudo sed -i \'/ swap / s/\^\\.\*\\\$/#\1/g\' /etc/fstab
+```
 
 **Load Modules for containerd:**
 
+```bash
 sudo modprobe overlay
-
 sudo modprobe br_netfilter
+```
 
-**Set Up sysctl Parameters for Kubernetes Networking**
+**Set Up sysctl Parameters for Kubernetes Networking**:
 
-cat \<\<EOF \| sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-
+```bash
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables = 1
-
 net.ipv4.ip_forward = 1
-
 net.bridge.bridge-nf-call-ip6tables = 1
-
 EOF
+```
 
-sudo sysctl \--system
+```shell
+sudo sysctl --system
+```
 
-![A screen shot of a computer AI-generated content may be
-incorrect.](media/image15.png){width="7.5in" height="4.21875in"}
+![Image17](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9ee57c26065324975be7567bbab76783d6b7b4ef/Images/Image17.png)
 
-**CRI-Tools**
+**CRI-Tools**:
 
-cri-tools is a set of command-line utilities for working with container
-runtimes that implement the Container Runtime Interface (CRI) in
-Kubernetes.
+cri-tools is a set of command-line utilities for working with container runtimes that implement the Container Runtime Interface (CRI) in Kubernetes.
 
 **Download and Install the Latest cri-tools RPM:**
 
+```shell
 cd \~
+```
 
+```shell
 curl -LO
 https://download.opensuse.org/repositories/isv:/kubernetes:/core:/stable:/v1.30/rpm/x86_64/cri-tools-1.30.0-150500.1.1.x86_64.rpm
+```
 
+```shell
 sudo yum localinstall -y cri-tools-1.30.0-150500.1.1.x86_64.rpm
+```
 
+```shell
 sudo sysctl --system
+```
 
-**Install containerd**
+### **Install containerd**
 
 **Update the system:**
 
+```shell
 sudo yum update -y
+```
 
 **Install containerd:**
 
+```shell
 sudo yum install -y containerd
+```
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image16.png){width="7.5in" height="4.21875in"}
+![Image18](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9ee57c26065324975be7567bbab76783d6b7b4ef/Images/Image18.png)
 
 **Create the configuration directory:**
 
+```shell
 sudo mkdir -p /etc/containerd
+```
 
 **Generate containerd configuration:**
 
-containerd config default \| sudo tee /etc/containerd/config.toml
+```shell
+containerd config default | sudo tee /etc/containerd/config.toml
+```
 
-![A computer screen shot of a black screen AI-generated content may be
-incorrect.](media/image17.png){width="7.5in" height="4.21875in"}
+![Image19](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/main/Images/Image19.png)
 
 **Restart containerd:**
 
+```shell
 sudo systemctl restart containerd
+```
 
 **Verify containerd status:**
 
+```shell
 sudo systemctl status containerd
+```
 
-![A computer screen shot of a black screen AI-generated content may be
-incorrect.](media/image18.png){width="7.5in" height="4.21875in"}
+![Image20](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/9ee57c26065324975be7567bbab76783d6b7b4ef/Images/Image20.png)
 
-**Install Kubernetes Components (kubeadm, kubelet, kubectl**
+### **Install Kubernetes Components (kubeadm, kubelet, kubectl)**
 
 **Add Kubernetes repository:**
 
