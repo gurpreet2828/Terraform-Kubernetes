@@ -1,6 +1,5 @@
----
-title: "**Deploying Kubernetes Cluster on AWS** "
----
+
+# **Deploying Kubernetes Cluster on AWS**
 
 ## **Summary**
 
@@ -163,86 +162,58 @@ If your AWS CLI is properly configured, you\'ll see a response like this:
 
 ## **Step 4: Provisioning AWS Infrastructure using Terraform**
 
-1.  Terraform init
+**1.** `Terraform init`
 
-- prepares your environment and configures everything Terraform needs to
-  interact with your infrastructure.
+- prepares your environment and configures everything Terraform needs to interact with your infrastructure.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image8.png){width="6.5in"
-height="3.388888888888889in"}
+![Image10](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image10.png)
 
-2.  terraform fmt
+**2.** `terraform fmt`
 
-- used to **automatically format** your Terraform configuration files to
-  a standard style. It ensures that your code is consistently formatted,
-  making it easier to read and maintain.
+- used to **automatically format** your Terraform configuration files to a standard style. It ensures that your code is consistently formatted, making it easier to read and maintain.
 
-3.  Terraform validate
+**3.** `Terraform validate`
 
-- used to **check the syntax and validity** of your Terraform
-  configuration files. It helps you catch errors in the configuration
-  before you attempt to run other Terraform commands, like terraform
-  plan or terraform apply.
+- used to **check the syntax and validity** of your Terraform configuration files. It helps you catch errors in the configuration
+  before you attempt to run other Terraform commands, like terraform plan or terraform apply.
 
-![](media/image9.png){width="7.5in" height="0.8229166666666666in"}
+![Image11](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image11.png)
 
-4.  terraform plan
+**4.** `terraform plan`
 
-- used to **preview the changes** Terraform will make to your
-  infrastructure based on the current configuration and the existing
-  state. It shows what actions will be taken (such as creating,
-  modifying, or deleting resources) when you apply the configuration
+- used to **preview the changes** Terraform will make to your infrastructure based on the current configuration and the existing state. It shows what actions will be taken (such as creating, modifying, or deleting resources) when you apply the configuration
 
-- Before running terraform apply to check exactly what changes Terraform
-  will make.
+- Before running terraform apply to check exactly what changes Terraform will make.
 
-> ***Before Running Terraform Plan must update the location of public
-> and private ssh keys under modules -compute - variables.tf***
+> ***Before Running Terraform Plan must update the location of public and private ssh keys under modules -compute - variables.tf***
 >
 > ***As shown in following image***
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image10.png){width="7.5in" height="4.21875in"}
+![Image12](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image12.png)
 
-**After applying the Terraform plan, you will see the following
-output:**
+**After applying the Terraform plan, you will see the following output:**
 
-![A computer screen shot of a computer screen AI-generated content may
-be incorrect.](media/image11.png){width="7.5in" height="4.21875in"}
+![Image13](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image13.png)
 
-**5:** Terraform apply
+**5.** `Terraform apply`
 
-Provision terraform managed infrastructure. You must confirm by trying
-**yes** if you would like to continue and perform the actions described
-to provision your infrastructure resources
+Provision terraform managed infrastructure. You must confirm by trying **yes** if you would like to continue and perform the actions described to provision your infrastructure resources
 
-After successfully applying the Terraform configuration, you will see
-the public IP addresses assigned to your Kubernetes master and node
-instances as output.
+After successfully applying the Terraform configuration, you will see the public IP addresses assigned to your Kubernetes master and node instances as output.
 
-![A black screen with white text AI-generated content may be
-incorrect.](media/image12.png){width="7.5in"
-height="1.6055555555555556in"}
+![Image14](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image14.png)
 
-**k8s-master-Public-IP**: The public IP address assigned to the
-Kubernetes master node.
+**k8s-master-Public-IP**: The public IP address assigned to the Kubernetes master node.
 
-**k8s-node-Public-IP**: A list of public IP addresses assigned to the
-Kubernetes worker nodes.
+**k8s-node-Public-IP**: A list of public IP addresses assigned to the Kubernetes worker nodes.
 
-**You can log in to your AWS account to view the infrastructure
-resources that have been provisioned.**
+**You can log in to your AWS account to view the infrastructure resources that have been provisioned.**
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image13.png){width="7.5in" height="4.21875in"}
-
-## 
+![Image15](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image15.png)
 
 ## **Step 5: Connect to K8s Master (Control Plane) Node**  {#step-5-connect-to-k8s-master-control-plane-node}
 
-Using the public IP address provided in the Terraform output, connect to
-the EC2 instance by executing the following command in your terminal:
+Using the public IP address provided in the Terraform output, connect to the EC2 instance by executing the following command in your terminal:
 
 ssh -i /root/.ssh/docker ec2-user@34.201.56.12
 
