@@ -336,300 +336,253 @@ sudo systemctl status containerd
 
 ### **Install Kubernetes Components (kubeadm, kubelet, kubectl)**
 
-**Add Kubernetes repository:**
+#### **Add Kubernetes repository:**
 
-cat \<\<EOF \| sudo tee /etc/yum.repos.d/kubernetes.repo
-
-\[kubernetes\]
-
+```bash
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
 name=Kubernetes
-
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
-
 enabled=1
-
 gpgcheck=1
-
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
-
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-
 EOF
+```
 
-![A black screen with white text AI-generated content may be
-incorrect.](media/image19.png){width="7.5in"
-height="2.6798611111111112in"}
+![Image21](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image21.png)
 
-**Set SELinux in Permissive Mode**
+#### **Set SELinux in Permissive Mode:**
 
+```bash
 sudo setenforce 0
+```
 
-sudo sed -i \'s/\^SELINUX=enforcing\$/SELINUX=permissive/\'
-/etc/selinux/config
+```bash
+sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+```
 
-![](media/image20.png){width="7.5in" height="0.83125in"}
+![Image22](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image22.png)
 
-**Install kubeadm, kubelet, and kubectl**
+#### **Install kubeadm, kubelet, and kubectl**
 
-sudo yum install -y kubelet kubeadm kubectl
-\--disableexcludes=kubernetes
+```shell
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+```
 
-![A screen shot of a computer screen AI-generated content may be
-incorrect.](media/image21.png){width="7.5in" height="4.21875in"}
+![Image23](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image23.png)
 
-**Enable and Start kubelet**
+#### **Enable and Start kubelet**
 
-sudo systemctl enable \--now kubelet
+```bash
+sudo systemctl enable --now kubelet
+```
 
-![](media/image22.png){width="7.5in" height="0.3888888888888889in"}
+![Image24](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image24.png)
 
 ## **Step 7: Initialize the Kubernetes Cluster and Install Calico Network**
 
-1.  **Create Kubeadm Config File:**
+### 1. **Create Kubeadm Config File:**
 
+```bash
 vi kube-config.yml
+```
 
-**Insert the following content in above yml file**
+#### **Insert the following content in above yml file**
 
+```yml
 apiVersion: kubeadm.k8s.io/v1beta3
-
 kubernetesVersion: 1.32.0
-
-\# This is a configuration file for kubeadm to set up a Kubernetes
-cluster.
-
+# This is a configuration file for kubeadm to set up a Kubernetes cluster.
 kind: ClusterConfiguration
-
 networking:
-
-  podSubnet: 192.168.0.0/16
-
+  podSubnet: 192.168.0.0/16
 apiServer:
+  extraArgs:
+   service-node-port-range: 1024-1233
+```
 
-  extraArgs:
+### 2. **Initialize Kubernetes Cluster:**
 
-   service-node-port-range: 1024-1233
+```bash
+sudo kubeadm init --config kube-config.yml --ignore-preflight-errors=all
+```
 
-2.  **Initialize Kubernetes Cluster:**
+**Note:** The purpose of --ignore-preflight-errors=all flag is to ignore the K8s HW requirements
 
-sudo kubeadm init \--config kube-config.yml
-\--ignore-preflight-errors=all
+![Image25](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image25.png)
 
-**Note:** The purpose of \--ignore-preflight-errors=all flag is to
-ignore the K8s HW requirements
+### 3. **Set Up Kubernetes CLI Access:**
 
-![A computer screen with many small white and blue text AI-generated
-content may be incorrect.](media/image23.png){width="7.5in"
-height="4.21875in"}
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
-3.  **Set Up Kubernetes CLI Access:**
+### 4. **Check Node Status:**
 
-mkdir -p \$HOME/.kube
-
-sudo cp -i /etc/kubernetes/admin.conf \$HOME/.kube/config
-
-sudo chown \$(id -u):\$(id -g) \$HOME/.kube/config
-
-4.  **Check Node Status:**
-
+```bash
 kubectl get nodes
+```
 
-![A black background with white text AI-generated content may be
-incorrect.](media/image24.png){width="7.5in"
-height="0.9319444444444445in"}
+![Image26](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image26.png)
 
-5.  **Install Calico Network Plugin:**
+### 5. **Install Calico Network Plugin:**
 
+```bash
 kubectl apply -f <https://docs.projectcalico.org/manifests/calico.yaml>
+```
 
-![A screen shot of a computer screen AI-generated content may be
-incorrect.](media/image25.png){width="7.5in"
-height="4.447916666666667in"}
+![Image27](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image27.png)
 
-**Wait a few minutes, then verify the node status:** Run the following
-command
+**Wait a few minutes, then verify the node status:** Run the following command
 
+```bash
 kubectl get nodes
+```
 
-## ![A black screen with white text AI-generated content may be incorrect.](media/image26.png){width="7.5in" height="1.2409722222222221in"} {#a-black-screen-with-white-text-ai-generated-content-may-be-incorrect.}
-
-## 
+![Image28](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image28.png)
 
 ## **Step 8: Connect to K8s Worker Node**
 
-1.  **Connect to Worker Node**
+### 1. **Connect to Worker Node**
 
-- Use the same steps as the Master node, using the worker node\'s public
-  IP.
+- Use the same steps as the Master node, using the worker node's public IP.
 
-2.  **Install Kubernetes on Worker Node**
+### 2. **Install Kubernetes on Worker Node**
 
-- Follow the same installation steps as for the Master Node to install
-  containerd, kubeadm, kubelet, and kubectl.
+- Follow the same installation steps as for the Master Node to install containerd, kubeadm, kubelet, and kubectl.
 
-## **Step 9: Join the Work Node to the Kubernetes Cluster**  {#step-9-join-the-work-node-to-the-kubernetes-cluster}
+## **Step 9: Join the Work Node to the Kubernetes Cluster**
 
-**Get Join Command from Master Node**
+**Get Join Command from Master Node**:
 
-- On the master node, generate the join command by running the following
-  command
+- On the master node, generate the join command by running the following command
 
-kubeadm token create \--print-join-command
+```bash
+kubeadm token create --print-join-command
+```
 
 you will see like following
 
-sudo kubeadm join 10.0.1.194:6443 \--token oqxtns.kjiljprgiczfv2dv
-\--discovery-token-ca-cert-hash
-sha256:313c228d0a8ca5d96c2323c93ef2d9ec2e052308204cd2f5c18d368e247e395b
-\--ignore-preflight-errors=all
+sudo kubeadm join 10.0.1.194:6443 --token oqxtns.kjiljprgiczfv2dv --discovery-token-ca-cert-hash sha256:313c228d0a8ca5d96c2323c93ef2d9ec2e052308204cd2f5c18d368e247e395b --ignore-preflight-errors=all
 
 copy the above command and paste to your worker node
 
-In the Master (Control Plane) Node, check the cluster status (It could
-take few moments until the node become ready)
+In the Master (Control Plane) Node, check the cluster status (It could take few moments until the node become ready)
 
+```bash
 kubectl get nodes
+```
 
-![A screenshot of a computer program AI-generated content may be
-incorrect.](media/image27.png){width="7.5in"
-height="0.9930555555555556in"}
-
-## 
+![Image29](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image29.png)
 
 ## **Step 10: Deploy React Application**
 
-1.  **Create React Application YAML (react-app-pod.yml)**
+### 1. **Create React Application YAML (react-app-pod.yml)**
 
 > **Run the following command**
->
-> vi react-app-pod.yml
 
+```shell
+ vi react-app-pod.yml
+```
+
+insert following yml code
+
+```yml
 apiVersion: v1
-
 kind: Service
-
 metadata:
-
-name: react-app
-
+  name: react-app
 spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 1233
+  selector:
+    app: react-app
 
-type: NodePort
-
-ports:
-
-\- port: 80
-
-targetPort: 80
-
-nodePort: 1233
-
-selector:
-
-app: react-app
-
-\-\--
-
+---
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
-
-name: react-app
-
+  name: react-app
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-app
+  template:
+    metadata:
+      labels:
+        app: react-app
+    spec:
+      containers:
+      - name: react-app
+        image: <your-docker-hub-image>
+        ports:
+        - containerPort: 80
+```
 
-replicas: 1
+### 2. **Apply the React App YAML**
 
-selector:
-
-matchLabels:
-
-app: react-app
-
-template:
-
-metadata:
-
-labels:
-
-app: react-app
-
-spec:
-
-containers:
-
-\- name: react-app
-
-image: \<your-docker-hub-image\>
-
-ports:
-
-\- containerPort: 80
-
-2.  **Apply the React App YAML**
-
+```shell
 kubectl create -f react-app-pod.yml
+```
 
-> ![A black screen with white text AI-generated content may be
-> incorrect.](media/image28.png){width="6.833333333333333in"
-> height="0.8826388888888889in"}
+![Image30](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image30.png)
 
-3.  **Verify Pods and Services**
+### 3. **Verify Pods and Services**
 
-> kubectl get pods
->
-> ![A screenshot of a computer program AI-generated content may be
-> incorrect.](media/image29.png){width="7.5in"
-> height="1.0881944444444445in"}
->
-> kubectl get services
->
-> ![A screen shot of a computer AI-generated content may be
-> incorrect.](media/image30.png){width="6.65in"
-> height="1.2513888888888889in"}
+kubectl get pods
 
-**Verify that the pod is up and running**
+![Image31](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image31.png)
+
+kubectl get services
+
+![Image32](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image32.png)
+
+#### **Verify that the pod is up and running**
 
 kubectl get pods -o wide
 
-![](media/image31.png){width="7.5in" height="0.6076388888888888in"}
+![Image33](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image33.png)
 
-**Check communication with react-app pod**
+#### **Check communication with react-app pod**
 
-curl \< react-app IP address\>
+curl < react-app IP address>
 
-ex: curl 192.168.203.72
+Example:
 
-![A black screen with many small colored lines AI-generated content may
-be incorrect.](media/image32.png){width="7.5in"
-height="2.154861111111111in"}
+```bash
+curl 192.168.203.72
+```
 
-**Verify that the deployment complete**
+![Image34](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image34.png)
+
+#### **Verify that the deployment complete**
 
 kubectl get deployment
 
-![A screen shot of a computer AI-generated content may be
-incorrect.](media/image33.png){width="7.5in"
-height="1.3590277777777777in"}
+![Image35](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image35.png)
 
-Go to the pubic IP of your Master server and port 1233 \<Public
-IP\>:1233. The sample react application should be running.
+Go to the pubic IP of your Master server and port 1233. The sample react application should be running.
 
-Ex: http://44.211.189.148:1233/
+[http://publicip:port](http://publicip:port)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image34.png){width="7.5in" height="4.21875in"}
+Example
+`http://44.211.189.148:1233/`
 
-Go to the pubic IP of your Worker server and port 1233 \<Public
-IP\>:1233. The sample react application should be running.
+![Image36](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image36.png)
 
-Ex: http://54.161.213.12:1233/
+Go to the pubic IP of your Worker server and port 1233 \<PublicIP\>:1233. The sample react application should be running.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](media/image35.png){width="7.5in"
-height="3.933333333333333in"}
+Example
+`http://54.161.213.12:1233/`
+
+![Image37](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/58dbf88a3c25d088ebf725eae03719df41a520d2/Images/Image37.png)
 
 ## **Step 11: Clean up Resources**
 
