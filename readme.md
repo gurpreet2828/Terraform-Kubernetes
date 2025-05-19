@@ -189,7 +189,7 @@ If your AWS CLI is properly configured, you\'ll see a response like this:
 >
 > ***As shown in following image***
 
-![Image12](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/ccb2abe80634611295238d8963ef24d7be384e10/Images/Image12.png)
+![Image12](https://github.com/gurpreet2828/Terraform-Kubernetes/blob/a3e907b060d5c68931297d338630ad10c392b774/Images/Image12.png)
 
 **After applying the Terraform plan, you will see the following output:**
 
